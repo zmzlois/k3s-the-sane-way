@@ -68,7 +68,7 @@ jobs:
           timeout: 3000s
 
   install-k3s-london:
-    needs: prepare-london-host
+    needs: [prepare-london-host, prepare-seattle-host, prepare-frankfurt-host]
     name: Install K3s on London Host
     runs-on: ubuntu-latest
     steps:
