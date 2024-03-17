@@ -16,7 +16,7 @@ env:
   USERNAME: ${{ secrets.USERNAME }}
 
 jobs:
-  prepare-all-host:
+  prepare-london-host:
     name: Prepare London Host
     runs-on: ubuntu-latest
     steps:
@@ -24,7 +24,41 @@ jobs:
       - name: Checkout all directory
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ env.LONDON_HOST }}, ${{ env.FRANKFURT_HOST }}, ${{ env.SEATTLE_HOST }}
+          host: ${{ env.LONDON_HOST }}
+          username: ${{ env.USERNAME }}
+          key: ${{ env.SECRET_KEY }}
+          port: 22
+          script: |
+            chmod +x ./shared/preparation.sh
+            ./shared/preparation.sh
+          timeout: 3000s
+
+  prepare-seattle-host:
+    name: Prepare Seattle Host
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Checkout all directory
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ env.SEATTLE_HOST }}
+          username: ${{ env.USERNAME }}
+          key: ${{ env.SECRET_KEY }}
+          port: 22
+          script: |
+            chmod +x ./shared/preparation.sh
+            ./shared/preparation.sh
+          timeout: 3000s
+
+  prepare-frankfurt-host:
+    name: Prepare Frankfurt Host
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Checkout all directory
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ env.FRANKFURT_HOST }}
           username: ${{ env.USERNAME }}
           key: ${{ env.SECRET_KEY }}
           port: 22
@@ -34,7 +68,7 @@ jobs:
           timeout: 3000s
 
   install-k3s-london:
-    needs: prepare-all-host
+    needs: prepare-london-host
     name: Install K3s on London Host
     runs-on: ubuntu-latest
     steps:
