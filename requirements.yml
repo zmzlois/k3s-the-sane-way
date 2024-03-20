@@ -1,0 +1,5 @@
+---
+collections:
+  - name: devsec.hardening
+roles:
+  - src: https://github.com/PyratLabs/ansible-role-k3s.git
