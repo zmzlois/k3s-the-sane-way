@@ -2,6 +2,7 @@
 - name: Preparation for Kubernetes
   hosts: all
   become: yes
+  gather_facts: yes
 
   pre_tasks:
     - name: Set unattended-upgrades configuration
@@ -37,6 +38,7 @@
     - name: Start NTP service
       service: name=ntpd state=started enabled=yes
 
+    # FIXME: directory is redundant to refactor
     - name: Create directory /nvim
       file:
         path: /nvim
@@ -55,6 +57,7 @@
         state: directory
         mode: "0755"
 
+    # FIXME: this didn't happen maybe because the file was already there?
     - name: Move nvim.appimage to /opt/nvim/nvim
       command:
         cmd: mv /nvim/nvim.appimage /opt/nvim/nvim
