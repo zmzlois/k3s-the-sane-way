@@ -1,0 +1,84 @@
+---
+- name: Preparation for Kubernetes
+  hosts: all
+  become: yes
+
+  pre_tasks:
+    - name: Set unattended-upgrades configuration
+      debconf:
+        name: unattended-upgrades
+        question: "unattended-upgrades/enable_auto_updates"
+        value: "true"
+        vtype: boolean
+      register: result
+      ignore_errors: yes
+
+    - name: Check if debconf value was set
+      debug:
+        msg: "unattended-upgrades configuration set successfully"
+      when: result.changed
+
+    - name: Install required packages including git
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - git
+        - curl
+        - wget
+        - sudo
+
+    - name: Update package lists
+      apt: update_cache=yes
+
+    - name: Ensure time synced with NTP
+      apt: name=ntp state=present
+
+    - name: Start NTP service
+      service: name=ntpd state=started enabled=yes
+
+    - name: Create directory /nvim
+      file:
+        path: /nvim
+        state: directory
+        mode: 0755
+
+    - name: Download NeoVim AppImage
+      get_url:
+        url: https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
+        dest: /opt/nvim/nvim.appimage
+        mode: "u+x"
+
+    - name: Create directory /opt/nvim
+      file:
+        path: /opt/nvim
+        state: directory
+        mode: "0755"
+
+    - name: Move nvim.appimage to /opt/nvim/nvim
+      command:
+        cmd: mv /nvim/nvim.appimage /opt/nvim/nvim
+      args:
+        creates: /opt/nvim/nvim
+      register: move_result
+
+    - name: Display move command result
+      debug:
+        msg: "{{ move_result.stdout_lines }}"
+
+    - name: Add export PATH to ~/.bashrc
+      lineinfile:
+        path: ~/.bashrc
+        line: 'export PATH="$PATH:/opt/nvim/"'
+        create: yes
+
+    - name: Extract NeoVim AppImage
+      command:
+        cmd: /opt/nvim/nvim.appimage --appimage-extract
+
+    - name: Expose NeoVim globally
+      command:
+        cmd: ln -s /opt/nvim/squashfs-root/AppRun /usr/bin/nvim
+      args:
+        creates: /usr/bin/nvim
+      become: yes
