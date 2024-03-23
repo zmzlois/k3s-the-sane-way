@@ -4,11 +4,11 @@
 
 ## But Why?
 
-- The cost
+#### The cost
 
 Before I started this project, I had PlanetScale Scaler Pro, Vercel Teams, Fly.io, Railway...One night I realised the bills from Vercel alone was higher than my monthly grocery budget!!!
 
-- Latency
+#### Latency
 
 Let's say if I am making a web app for my own convenience, I might buy a server in the UK, and deploy both the app and database on the same server, it will load instantly for me, and the data traveling between server and database would be short.
 
@@ -18,11 +18,11 @@ But how about my friends in the US? In Asia? In Australia? I soon bought a serve
 
 If I find a service provider that gives me this level of latency, I am out (unless they are very pretty 👉🏻👈🏻).
 
-- Inspiration
+#### Inspiration
 
 I took inspiration from [Jeff Geerling's Raspberry Pi Cluster Project](https://www.jeffgeerling.com/blog/2020/raspberry-pi-cluster-episode-1-introduction-clusters) - if your stack can run under extreme conditions like the Rasberry Pi (ARM with 1GB RAM), you are golden. And you will learn a lot from running things on bare metal.
 
-If we stop thinking about I need the OS of our generation to handle the complexity and separation of servers.
+I stop thinking about distributed system, servers and their location but instead, I think about [the OS of our generation](https://www.oilshell.org/blog/2021/07/blog-backlog-2.html) -- Kubernetes to handle the complexity and separation of servers. Stripping down the distance, and physicality of servers, merging them as one. The Unix of distributed operation system excites me.
 
 **I know what I want. I can't afford EKS by myself. I want a deployment strategy that's optimised no matter how extreme the condition is. I can't guarantee `the experience on the edge` with milliseconds of cold start-- the best I can do is a server close enough to my friends and the shortest distance between server and database.**
 
@@ -31,7 +31,8 @@ Let the fiber handle the rest. I pray.
 #### What I want at the end...
 
 - [Round-robin DNS](https://en.wikipedia.org/wiki/Round-robin_DNS): based on the requested user's location I route them to a server that's closest to them.
-- [Database replication](): I don't want to only have one database. I want every server to have a replica of the same database. Each server might have multiple databases for different applications.
+- [Application replication](https://kubernetes.io/docs/tasks/run-application/run-replicated-stateful-application/#cloning-existing-data): I don't want to only have one database on one server. I want every server to have a replica of the same database. Each server might have multiple databases for different applications. Each server should also have replicas of the same applications.
+- [Node Affinity](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity): Each application in the same node should only talk to the database in the same node to allow the best speed. The communication happens within the node but not outside.
 
 I bought 4 servers from a cloud provider around the world: London, Frankfurt, Seattle and Singapore. It's not the managed services from GKE or EKS that help you manage your Kubernetes cluster -- the only thing that came with them was the fact that they were booted with Debian 12.
 
@@ -44,8 +45,11 @@ Currently:
 
 Todo:
 
-- Github Runner
--
+- I did something messed up - I forgot to disable Traefik on k3s' initial installation. So now I need to figure out how to reconfigure it for reverse proxy and certs for applications.
+- Cert Manager
+- Longhorn
+- BullMQ
+- ...?
 
 ## Provisioning
 
@@ -113,11 +117,7 @@ kubectl --namespace monitoring get pods
 
 Visit https://github.com/prometheus-operator/kube-prometheus for instructions on how to create & configure Alertmanager and Prometheus instances using the Operator.
 
-//FIXME: Check how to attach nodes (node tolerence ) and make sure this thing is on the same node as the master via value? Girl you can't have database and application one in seattle and one in frankfurt.
-
-After installing Prometheus and Grafana do this:
-
-Remember to install openlens on local computer to monitor the cluster by
+After installing Prometheus and Grafana, remember to install openlens on the local computer to monitor the cluster by
 
 ```bash
 brew install openlens
@@ -125,19 +125,11 @@ brew install openlens
 
 After installing openlens remember to add a plugin on openlens `@alebcay/openlens-node-pod-menu`
 
-OpenLens will allow you to enter a pod's and monitor their health without getting cancer. Be careful of what the plugin can do it might terminate a pod.
+OpenLens will allow you to enter pods' terminal (imagine `docker exec -it <mycontainer> bash`) and monitor their health without getting cancer. Be careful of what the plugin can do it might terminate a pod.
 
 For services that are deployed to kubernetes, without active deployment you can access their dashboard via port forwarding on openlens.
 
-**Available dashboard**
+**Current Available dashboard**
 
 - Prometheus alert manager
 - Grafana
-
-#### Notes to self
-
-Branch main: using shell script to deploy k3s with bare metal
-
-Branch k3s-cluster: using ansible to bring a complete solution for a bare metal machine
-
-Branch k8s-cluster: using shell script to deploy k8s
