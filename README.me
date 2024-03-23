@@ -1,0 +1,33 @@
+# K3S multi-node deployment
+
+To provision all servers 
+```bash 
+ansible-playbook playbook/site.yml
+```
+
+To reset all servers 
+
+```bash 
+ansible-playbook playbook/reboot.yml
+```
+
+After k3s is installed on the master run: 
+
+```bash
+ssh root@<master-ip>:~/.kube/config ~/.kube/config-ctb-london
+```
+
+Edit the `~/.kube/config-ctb-london` server address to the master node's address
+
+And then set it as environment variable as: 
+```bash
+export KUBECONFIG=~/.kube/config-ctb-london
+```
+
+
+#### Notes to self
+Branch main: using shell script to deploy k3s with bare metal
+
+Branch k3s-cluster: using ansible to bring a complete solution for a bare metal machine 
+
+Branch k8s-cluster: using shell script to deploy k8s
