@@ -1,0 +1,76 @@
+---
+k3s_cluster:
+  children:
+    server:
+      hosts:
+       127.0.0.1:
+    agent:
+      hosts:
+        127.0.0.2:
+        127.0.0.3:
+        127.0.0.4:
+       
+
+  # Required Vars
+  # If you don't want the token sitting as plaintext in the playbook you should pass it as a ENV when running the playbook
+
+  # ansible-playbook playbook/site.yml -i inventory.yml --extra-vars token=<MY_SECURE_TOKEN>
+   #If you want a random token you could also achieve something similar with
+
+  # ansible-playbook playbook/site.yml -i inventory.yml --extra-vars token=$(rand or gpw or pwgen command)
+  vars:
+    ansible_port: 22
+    ansible_user: root
+    k3s_version: v1.26.9+k3s1
+    token: "mytoken"  # Use ansible vault if you want to keep it secret
+    api_endpoint: "{{ hostvars[groups['server'][0]]['ansible_host'] | default(groups['server'][0]) }}"
+    extra_server_args: ""
+    extra_agent_args: ""
+    pip_install_packages: ["pyyaml"] # you need this otherwise helm will fail
+    helm_version: v3.14.3
+  
+
+  # Optional vars
+    # api_port: 6443
+    # k3s_server_location: /var/lib/rancher/k3s
+    # systemd_dir: /etc/systemd/system
+    # extra_service_envs: [ 'ENV_VAR1=VALUE1', 'ENV_VAR2=VALUE2' ]
+    # Manifests or Airgap should be either full paths or relative to the playbook directory.
+    # List of locally available manifests to apply to the cluster, useful for PVCs or Traefik modifications.
+    # extra_manifests: [ '/path/to/manifest1.yaml', '/path/to/manifest2.yaml' ]
+    # airgap_dir: /tmp/k3s-airgap-images
+    # user_kubectl: true, by default kubectl is symlinked and configured for use by ansible_user. Set to false to only kubectl via root user.
+    # server_config_yaml:  |
+      # This is now an inner yaml file. Maintain the indentation.
+      # YAML here will be placed as the content of /etc/rancher/k3s/config.yaml
+      # See https://docs.k3s.io/installation/configuration#configuration-file
+
+# checking disk space
+# ansible k3s_cluster -a "df -h"
+
+# checking memory
+# ansible k3s_cluster -a "free -m"
+
+# checking cpu
+# ansible k3s_cluster -a "lscpu"
+
+# check date
+# ansible k3s_cluster -a "date"
+
+# return everything ansible discovered about the server 
+# ansible k3s_cluster -m setup
+
+# check the uptime
+# ansible k3s_cluster -a "uptime"
+
+# check the kernel version
+# ansible k3s_cluster -a "uname -r"
+
+# check the hostname
+# ansible k3s_cluster -a "hostname"
+
+# check time synced with ntp
+# ansible k3s_cluster -m apt -a "name=ntp state=present" -b
+
+# check system time and locale 
+# ansible k3s_cluster -a "timedatectl"

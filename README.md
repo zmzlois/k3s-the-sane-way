@@ -53,7 +53,7 @@ Todo:
 
 ## Provisioning
 
-### Step 1
+### Step 1: Configure K3s cluster
 
 To provision all servers
 
@@ -81,9 +81,9 @@ And then set it as environment variable as:
 export KUBECONFIG=~/.kube/config-ctb-london
 ```
 
-### Step 2
+### Step 2: Prometheus
 
-Helm charts configuration
+I did something messed up on my first attempt: I forgot to make sure all pods from this stack should be on the same node. It had the database in Frankfurt, alert manager in Seattle and Grafana in Singapore. So I walked the [ConfigSet](./helm/prometheus/value.yml) and reassigned all nodes to London [via the easiest way](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector). I found the label I need for London node from OpenLens (OpenLens good).
 
 1. Run
 
@@ -95,7 +95,7 @@ to ensure helm is installed and if it is the latest version.
 
 2. Install Prometheus and Grafana stack
 
-In the [prometheus install playbook](./helm/prometheus/install.yml), using ansible's built-in helm module to install helm chart. To have all the pods deploy to the same node, the easiest way is via a node selector. So I went through the [prometheus stack chart](./helm/prometheus/chart.yml) to find all the pods that has `nodeSelector` attached and update the value to the deploy node label. I found the label in openlens' metadata for nodes.
+In the [prometheus install play](./helm/prometheus/install.yml), using ansible's built-in helm module to install helm chart.
 
 To learn more about the relationship between nodes, pods, and their relationships, look at [taint and toleration](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/#:~:text=Tolerations%20allow%20the%20scheduler%20to,not%20scheduled%20onto%20inappropriate%20nodes.) and [node affinity - assigning pods to nodes](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity) on kubernetes documentation.
 
@@ -128,6 +128,8 @@ After installing openlens remember to add a plugin on openlens `@alebcay/openlen
 OpenLens will allow you to enter pods' terminal (imagine `docker exec -it <mycontainer> bash`) and monitor their health without getting cancer. Be careful of what the plugin can do it might terminate a pod.
 
 For services that are deployed to kubernetes, without active deployment you can access their dashboard via port forwarding on openlens.
+
+### Step 3: Reconfigure default Traefik
 
 **Current Available dashboard**
 
