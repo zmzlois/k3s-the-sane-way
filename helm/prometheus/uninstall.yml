@@ -3,11 +3,12 @@
   hosts: server
   become: true
   gather_facts: true
-  var:
-    - ansible_python_interpreter: { { ansible_playbook_python } }
+
   tasks:
     - name: Uninstall prometheus
       kubernetes.core.helm:
-        uninstall: true
+        purge: yes
         release_name: prometheus
-        state: present
+        chart_ref: kube-prometheus-stack
+        release_namespace: monitoring
+        state: absent
