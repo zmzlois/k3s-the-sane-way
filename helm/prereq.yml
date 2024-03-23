@@ -1,0 +1,28 @@
+---
+- name: Install Helm prerequisites
+  hosts: k3s_cluster
+  gather_facts: false
+
+  tasks:
+    - name: Clean up helm if exists through apt
+      apt:
+        name: helm
+        state: absent
+
+    - name: Clean up helm if exists through curl
+      file:
+        path: /usr/local/bin/helm
+        state: absent
+
+    - name: Install helm if not exists
+      unarchive:
+        src: https://get.helm.sh/helm-{{helm_version}}-linux-amd64.tar.gz
+        dest: /usr/local/bin
+        extra_opts: "--strip-components=1"
+        owner: root
+        group: root
+        mode: 0755
+        remote_src: true
+      args:
+        creates: /usr/local/bin/helm
+      tags: [helm]

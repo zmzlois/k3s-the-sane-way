@@ -1,21 +1,25 @@
 ---
 - name: Cluster prep
   hosts: k3s_cluster
+  tags: [cluster-setup]
   gather_facts: true
   become: true
   roles:
     - role: prereq
     - role: airgap
     - role: raspberrypi
+    - role: ansible-role-pip
 
 - name: Setup K3S server
   hosts: server
+  tags: [k3s-server-setup]
   become: true
   roles:
     - role: k3s_server
 
 - name: Setup K3S agent
   hosts: agent
+  tags: [k3s-agent-setup]
   become: true
   roles:
     - role: k3s_agent
