@@ -1,0 +1,13 @@
+---
+- name: Install prometheus on master
+  hosts: server
+  become: true
+  gather_facts: true
+  var:
+    - ansible_python_interpreter: { { ansible_playbook_python } }
+  tasks:
+    - name: Uninstall prometheus
+      kubernetes.core.helm:
+        uninstall: true
+        release_name: prometheus
+        state: present
