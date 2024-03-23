@@ -14,5 +14,40 @@
         release_namespace: monitoring
         create_namespace: true
         release_name: prometheus
-
+        values:
+          alertmanager:
+            alertmanagerSpec:
+              nodeSelector:
+                kubernetes.io/hostname: london
+          grafana:
+            imageRenderer:
+              nodeSelector:
+                kubernetes.io/hostname: london
+          grafana:
+            nodeSelector:
+              kubernetes.io/hostname: london
+          kube-state-metrics:
+            nodeSelector:
+              kubernetes.io/hostname: london
+          prometheus:
+            prometheusSpec:
+              nodeSelector:
+                kubernetes.io/hostname: london
+          prometheus-node-exporter:
+            nodeSelector:
+              kubernetes.io/hostname: london
+          prometheusOperator:
+            admissionWebhooks:
+              deployment:
+                nodeSelector:
+                  kubernetes.io/hostname: london
+              patch:
+                nodeSelector:
+                  kubernetes.io/hostname: london
+            nodeSelector:
+              kubernetes.io/hostname: london
+          thanosRuler:
+            thanosRulerSpec:
+              nodeSelector:
+                kubernetes.io/hostname: london
         state: present
