@@ -49,6 +49,8 @@ to ensure helm is released and if
 
 2. Install Prometheus and Grafana stack
 
+In the [prometheus install playbook](./helm/prometheus/install.yml), using ansible's built in helm module to install helm chart. To have all the pods deploy to the same node, the easiest way is via a node selector. So I went through the [prometheus stack chart](./helm/prometheus/chart.yml) to find all the pods that has nodeSelector attached and update the value to the deploy node label. I found the label in openlens' metadata for nodes.
+
 Run
 
 ```bash
