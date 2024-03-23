@@ -74,9 +74,21 @@ timedatectl
 mkdir -p /nvim && cd /nvim
 curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
 chmod u+x nvim.appimage
-./nvim.appimage
 
-# Expose it globally
+# to expose it globally
+mkdir -p /opt/nvim
+mv nvim.appimage /opt/nvim/nvim
+
+# add the following line to ~/.bashrc
+export PATH="$PATH:/opt/nvim/"
+
+./nvim.appimage --appimage-extract
+./squashfs-root/AppRun --version
+
+# Optional: exposing nvim globally.
+sudo mv squashfs-root /
+sudo ln -s /squashfs-root/AppRun /usr/bin/nvim
+nvim
 
 # Get nvim config in
 mv ~/.config/nvim{,.bak}

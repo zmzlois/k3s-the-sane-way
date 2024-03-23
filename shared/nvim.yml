@@ -1,0 +1,61 @@
+--- 
+
+- name: Create directory /nvim
+  file:
+    path: /nvim
+    state: directory
+    mode: 0755
+
+- name: Download NeoVim AppImage
+  get_url:
+    url: https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
+    dest: /opt/nvim/nvim.appimage
+    mode: "u+x"
+
+- name: Create directory /opt/nvim
+  file:
+    path: /opt/nvim
+    state: directory
+    mode: "0755"
+
+    # FIXME: this didn't happen maybe because the file was already there?
+- name: Move nvim.appimage to /opt/nvim/nvim
+  command:
+    cmd: mv /nvim/nvim.appimage /opt/nvim/nvim
+    args:
+      creates: /opt/nvim/nvim
+      register: move_result
+
+- name: Display move command result
+  debug:
+    msg: "{{ move_result.stdout_lines }}"
+
+- name: Add export PATH to ~/.bashrc
+  lineinfile:
+    path: ~/.bashrc
+    line: 'export PATH="$PATH:/opt/nvim/"'
+    create: yes
+
+- name: Extract NeoVim AppImage
+  command:
+    cmd: /opt/nvim/nvim.appimage --appimage-extract
+
+- name: Expose NeoVim globally
+  command:
+    cmd: ln -s /opt/nvim/squashfs-root/AppRun /usr/bin/nvim
+    args:
+      creates: /usr/bin/nvim
+      become: yes
+
+- name: Do a backup on the current nvim config
+  command:
+    cmd: mv ~/.config/nvim ~/.config/nvim.bak
+    args:
+      creates: ~/.config/nvim.bak
+
+- name: Clone a nvim config repo 
+  git: 
+    repo: https://github.com/kerwanp/nvim.git
+    dest: ~/.config/nvim
+    clone: yes
+    update: yes

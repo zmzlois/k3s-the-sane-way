@@ -1,3 +1,11 @@
-# Terraform variables
+# terraform environment variables
+
 */variables.tf
 variables.tf
+*.auto.tfvars
+
+hosts.ini
+*/hosts.ini
+
+inventory.*
+*/inventory.*
