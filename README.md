@@ -135,3 +135,7 @@ For services that are deployed to kubernetes, without active deployment you can 
 
 - Prometheus alert manager
 - Grafana
+
+### Appreciation
+
+Without the help, discussion with my friends [Anna](https://github.com/TheDevMinerTV) and [Martin](https://github.com/kerwanp) this project wouldn't have started. Also thank Rancher's [k3s-ansible](https://github.com/k3s-io/k3s-ansible) project and [Jeff's pip role](https://github.com/geerlingguy/ansible-role-pip).
