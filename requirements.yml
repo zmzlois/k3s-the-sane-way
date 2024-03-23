@@ -1,0 +1,9 @@
+---
+collections:
+  - name: devsec.hardening
+  - name: ansible.utils
+  - name: community.general
+  - name: ansible.posix
+  - name: kubernetes.core
+roles:
+  - src: https://github.com/PyratLabs/ansible-role-k3s.git
