@@ -3,20 +3,26 @@
   hosts: k3s_cluster
   become: true
   tasks:
+    - name: Kill all namespace and interface in k3s
+      # when: "'server' in group_names"
+      ansible.builtin.command:
+        cmd: /usr/local/bin/k3s-killall.sh
+
     - name: Run K3s Uninstall script [server]
-      when: "'server' in group_names"
+      # when: "'server' in group_names"
       ansible.builtin.command:
         cmd: k3s-uninstall.sh
         removes: /var/lib/rancher/k3s/*
     - name: Run K3s Uninstall script [agent]
       when: "'agent' in group_names"
       ansible.builtin.command:
-        cmd: k3s-agent-uninstall.sh
+        cmd: /usr/local/bin/k3s-agent-uninstall.sh
         removes: /var/lib/rancher/k3s/*
     - name: Remove user kubeconfig
       ansible.builtin.file:
         path: ~{{ ansible_user }}/.kube/config
         state: absent
+
     - name: Remove k3s install script
       ansible.builtin.file:
         path: /usr/local/bin/k3s-install.sh
