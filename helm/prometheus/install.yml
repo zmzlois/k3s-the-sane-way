@@ -23,7 +23,7 @@
             imageRenderer:
               nodeSelector:
                 kubernetes.io/hostname: london
-          grafana:
+        
             nodeSelector:
               kubernetes.io/hostname: london
           kube-state-metrics:
