@@ -1,15 +1,15 @@
 --- 
 
 - name: Create directory /nvim
-  file:
+  ansible.builtin.file:
     path: /nvim
     state: directory
     mode: 0755
 
 - name: Download NeoVim AppImage
-  get_url:
+  ansible.builtin.get_url:
     url: https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
-    dest: /opt/nvim/nvim.appimage
+    dest: /nvim
     mode: "u+x"
 
 - name: Create directory /opt/nvim
@@ -20,14 +20,15 @@
 
     # FIXME: this didn't happen maybe because the file was already there?
 - name: Move nvim.appimage to /opt/nvim/nvim
-  command:
-    cmd: mv /nvim/nvim.appimage /opt/nvim/nvim
-    args:
-      creates: /opt/nvim/nvim
-      register: move_result
+  ansible.builtin.copy: 
+      remote_src: /nvim/nvim.appimage 
+      dest: /opt/nvim
+      args:
+        creates: /opt/nvim/nvim
+        register: move_result
 
 - name: Display move command result
-  debug:
+  ansible.builtin.debug:
     msg: "{{ move_result.stdout_lines }}"
 
 - name: Add export PATH to ~/.bashrc
@@ -37,19 +38,22 @@
     create: yes
 
 - name: Extract NeoVim AppImage
-  command:
-    cmd: /opt/nvim/nvim.appimage --appimage-extract
+  ansible.builtin.shell: | 
+      /opt/nvim/nvim.appimage --appimage-extract
 
 - name: Expose NeoVim globally
-  command:
-    cmd: ln -s /opt/nvim/squashfs-root/AppRun /usr/bin/nvim
+  ansible.builtin.file:
+    src: /opt/nvim/squashfs-root/AppRun 
+    dest: /usr/bin/nvim
+    state: link
     args:
       creates: /usr/bin/nvim
       become: yes
 
 - name: Do a backup on the current nvim config
-  command:
-    cmd: mv ~/.config/nvim ~/.config/nvim.bak
+  ansible.builtin.copy:
+    remote_src: ~/.config/nvim 
+    dest: ~/.config/nvim.bak
     args:
       creates: ~/.config/nvim.bak
 
