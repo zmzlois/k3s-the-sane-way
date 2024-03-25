@@ -40,7 +40,7 @@
 
     - name: Check if nvim app image exists
       stat:
-        path: /opt/nvim/nvim.appimage
+        path: /usr/bin/nvim
       register: nvim_app
 
     - name: Import nvim task if nvim.appimage does not exists
