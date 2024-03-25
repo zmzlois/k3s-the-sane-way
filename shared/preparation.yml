@@ -46,4 +46,4 @@
     - name: Import nvim task if nvim.appimage does not exists
       import_tasks: nvim.yml
       tags: ["nvim"]
-      # when: not nvim_app.stat.exists
+      when: not nvim_app.stat.exists
