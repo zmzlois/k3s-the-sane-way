@@ -16,50 +16,54 @@
   file:
     path: /opt/nvim
     state: directory
-    mode: "0755"
+    mode: "644"
 
     # FIXME: this didn't happen maybe because the file was already there?
 - name: Move nvim.appimage to /opt/nvim/nvim
   ansible.builtin.copy: 
-      remote_src: /nvim/nvim.appimage 
+      src: /nvim/nvim.appimage 
       dest: /opt/nvim
-      args:
-        creates: /opt/nvim/nvim
-        register: move_result
-
-- name: Display move command result
-  ansible.builtin.debug:
-    msg: "{{ move_result.stdout_lines }}"
+      remote_src: true
+      mode: "preserve"
+   
 
 - name: Add export PATH to ~/.bashrc
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: ~/.bashrc
     line: 'export PATH="$PATH:/opt/nvim/"'
-    create: yes
+    create: true
 
 - name: Extract NeoVim AppImage
-  ansible.builtin.shell: | 
-      /opt/nvim/nvim.appimage --appimage-extract
+  ansible.builtin.shell: ./nvim.appimage --appimage-extract
+  args:
+    chdir: /opt/nvim
+
+- name: Remove /usr/bin/nvim if it exists
+  ansible.builtin.file:
+    path: /usr/bin/nvim
+    state: absent
 
 - name: Expose NeoVim globally
   ansible.builtin.file:
     src: /opt/nvim/squashfs-root/AppRun 
     dest: /usr/bin/nvim
     state: link
-    args:
-      creates: /usr/bin/nvim
-      become: yes
+
+- name: Check if nvim config exists
+  ansible.builtin.stat:
+    path: ~/.config/nvim
+  register: nvim_config
 
 - name: Do a backup on the current nvim config
   ansible.builtin.copy:
-    remote_src: ~/.config/nvim 
+    src: ~/.config/nvim 
     dest: ~/.config/nvim.bak
-    args:
-      creates: ~/.config/nvim.bak
+    remote_src: true
+  when: nvim_config.stat.exists
 
 - name: Clone a nvim config repo 
   git: 
     repo: https://github.com/kerwanp/nvim.git
     dest: ~/.config/nvim
-    clone: yes
-    update: yes
+    clone: true
+    update: true
