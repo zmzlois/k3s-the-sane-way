@@ -9,3 +9,12 @@ hosts.ini
 
 inventory.*
 */inventory.*
+
+# vagrant
+.vagrant
+*/.vagrant
+
+.env
+
+# typescript/npm
+node_modules
