@@ -49,3 +49,4 @@
     checksum: "sha256:{{ k3s_hash_sum }}"
     mode: 0755
   become: "{{ k3s_become }}"
+  ignore_errors: true
