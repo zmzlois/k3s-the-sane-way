@@ -1,0 +1,1 @@
+{ "dependencies": { "@types/node": "^20.11.30", "dotenv": "^16.4.5" } }
