@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import { env } from './env';
 async function reinstallInstance() {
 
@@ -23,8 +24,37 @@ async function reinstallInstance() {
 
     const instances = await listingInstances.json();
 
-    instances.data.forEach((instance) => {
-        console.log(instance.instanceId)
+
+    // FIXME: This is not working
+    instances.data.forEach(async (instance) => {
+        const uuid = randomUUID()
+
+        const instanceId = instance.instanceId
+
+        // console.log("instanceId: ", instanceId)
+
+        const response = await fetch(`https://api.contabo.com/v1/compute/instances/${instanceId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${ACCESS_TOKEN}`,
+                'x-request-id': uuid,
+                'x-trace-id': 'reinstall-all'
+            },
+            // body: '{"imageId": "a2c26e8f-84a5-4f3e-9c0e-b06511928cc0", "sshKeys": [1,2], "rootPassword": 12}',
+            body: JSON.stringify({
+                'imageId': '4efbc0ba-2313-4fe1-842a-516f8652e729',
+                'sshKeys': [
+                    env.SSH_KEY
+                ],
+                'rootPassword': env.ROOT_PASSWORD
+            })
+        })
+        const data = await response.json()
+        console.log("response:", data)
+
+
+        // console.log(instance)
     })
 
     return listingInstances
@@ -40,3 +70,6 @@ reinstallInstance().then((data) => { console.log("instance shown above") })
 // 201756556
 // 201516676
 // 201529204
+
+// Debian 12 id = 4efbc0ba-2313-4fe1-842a-516f8652e729
+// Ubuntu 23 id = 84b3b568-d7c9-48a4-9c07-2e328598caec
