@@ -9,7 +9,7 @@
 - name: Download NeoVim AppImage
   ansible.builtin.get_url:
     url: https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
-    dest: /nvim
+    dest: /nvim/nvim.appimage
     mode: "u+x"
 
 - name: Create directory /opt/nvim
