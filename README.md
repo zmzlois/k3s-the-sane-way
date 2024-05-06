@@ -135,7 +135,21 @@ OpenLens will allow you to enter pods' terminal (imagine `docker exec -it <mycon
 
 For services that are deployed to kubernetes, without active deployment you can access their dashboard via port forwarding on openlens.
 
-### Step 3: Reconfigure default Traefik
+### Step 3: Install Cert manager and configure ClusterIssuer
+
+Make sure that within the pip role we are installling "pyyaml" and "kubernetes" otherwise Helm configuration and ClusterIssuer configuration will fail.
+
+In the [site.yml](./playbook/site.yml) we have splitted roles into different tags. To run a standalone role we can do 
+
+```sh 
+ansible-playbook plabook/site.yml -t cluster-pip  # give it a tag
+```
+
+After that run to install cert manager as well as configuring ClusterIssuer for Kubernetes
+
+```sh 
+ansible-playbook helm/cert-manager/install.yml  
+```
 
 **Current Available dashboard**
 

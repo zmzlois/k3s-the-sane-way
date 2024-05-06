@@ -1,0 +1,12 @@
+---
+
+- name: Uninstall cert manager on master
+  hosts: server
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Uninstall cert manager
+      kubernetes.core.helm:
+        name: cert-manager
+        release_namespace: cert-manager
+        state: absent
