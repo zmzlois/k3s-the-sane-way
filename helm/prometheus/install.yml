@@ -18,36 +18,35 @@
           alertmanager:
             alertmanagerSpec:
               nodeSelector:
-                kubernetes.io/hostname: london
+                kubernetes.io/hostname: london-2
           grafana:
             imageRenderer:
               nodeSelector:
-                kubernetes.io/hostname: london
-          grafana:
+                kubernetes.io/hostname: london-2
             nodeSelector:
-              kubernetes.io/hostname: london
+              kubernetes.io/hostname: london-2
           kube-state-metrics:
             nodeSelector:
-              kubernetes.io/hostname: london
+              kubernetes.io/hostname: london-2
           prometheus:
             prometheusSpec:
               nodeSelector:
-                kubernetes.io/hostname: london
+                kubernetes.io/hostname: london-2
           prometheus-node-exporter:
             nodeSelector:
-              kubernetes.io/hostname: london
+              kubernetes.io/hostname: london-2
           prometheusOperator:
             admissionWebhooks:
               deployment:
                 nodeSelector:
-                  kubernetes.io/hostname: london
+                  kubernetes.io/hostname: london-2
               patch:
                 nodeSelector:
-                  kubernetes.io/hostname: london
+                  kubernetes.io/hostname: london-2
             nodeSelector:
-              kubernetes.io/hostname: london
+              kubernetes.io/hostname: london-2
           thanosRuler:
             thanosRulerSpec:
               nodeSelector:
-                kubernetes.io/hostname: london
+                kubernetes.io/hostname: london-2
         state: present

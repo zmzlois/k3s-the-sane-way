@@ -9,6 +9,7 @@
     - role: airgap
     - role: raspberrypi
     - role: ansible-role-pip
+    - role: ansible-role-k3s
 
 - name: Setup K3S server
   hosts: server

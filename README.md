@@ -30,7 +30,7 @@ Let the fiber handle the rest. I pray.
 
 #### What I want at the end...
 
-- [Round-robin DNS](https://en.wikipedia.org/wiki/Round-robin_DNS): based on the requested user's location I route them to a server that's closest to them.
+- [GEO DNS](https://blogs.manageengine.com/clouddns/2022/11/08/how-does-geodns-work.html): based on the requested user's location I route them to a server that's closest to them.
 - [Application replication](https://kubernetes.io/docs/tasks/run-application/run-replicated-stateful-application/#cloning-existing-data): I don't want to only have one database on one server. I want every server to have a replica of the same database. Each server might have multiple databases for different applications. Each server should also have replicas of the same applications.
 - [Node Affinity](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity): Each application in the same node should only talk to the database in the same node to allow the best speed. The communication happens within the node but not outside.
 
@@ -70,7 +70,7 @@ ansible-playbook playbook/reboot.yml
 After k3s is installed on the master run:
 
 ```bash
-ssh root@<master-ip>:~/.kube/config ~/.kube/config-ctb-london
+scp root@<master-ip>:~/.kube/config ~/.kube/config-ctb-london
 ```
 
 Edit the `~/.kube/config-ctb-london` server address to the master node's address
@@ -79,6 +79,12 @@ And then set it as environment variable as:
 
 ```bash
 export KUBECONFIG=~/.kube/config-ctb-london
+```
+
+We can check all the nodes and roles by running 
+
+```bash
+kubectl get nodes -o wide
 ```
 
 ### Step 2: Prometheus
