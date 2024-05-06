@@ -41,12 +41,13 @@ I bought 4 servers from a cloud provider around the world: London, Frankfurt, Se
 Currently:
 
 - [Prometheus](https://prometheus.io/) & [Grafana dashboard](https://grafana.com/): we install it via the community version [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml) it will come with every necessity baked in.
-- Traefik
+- Traefik: auto-installed by k3s 
+- [Cert Manager](https://cert-manager.io/)
+
 
 Todo:
 
-- I did something messed up - I forgot to disable Traefik on k3s' initial installation. So now I need to figure out how to reconfigure it for reverse proxy and certs for applications.
-- Cert Manager
+
 - Longhorn
 - BullMQ
 - ...?
