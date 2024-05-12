@@ -1,5 +1,5 @@
 ---
-- name: Install prometheus on master
+- name: Uninstall prometheus on master
   hosts: server
   become: true
   gather_facts: true
