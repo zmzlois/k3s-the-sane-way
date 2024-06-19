@@ -1,0 +1,14 @@
+---
+- name: Uninstall sentry
+  hosts: server
+  become: true
+  gather_facts: true
+
+  tasks:
+    - name: Uninstall sentry
+      kubernetes.core.helm:
+        purge: yes
+        release_name: sentry
+        chart_ref: sentry-kubernetes
+        release_namespace: monitoring
+        state: absent

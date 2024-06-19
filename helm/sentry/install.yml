@@ -1,0 +1,17 @@
+---
+# Sentry only need to be installed on one of the node and it will find rest of the nodes
+
+- name: Install sentry on master
+  hosts: server
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Install sentry
+      kubernetes.core.helm:
+        name: sentry
+        chart_repo_url: https://sentry-kubernetes.github.io/charts
+        chart_ref: sentry-kubernetes
+        release_namespace: monitoring
+        release_name: sentry
+
+        state: present
